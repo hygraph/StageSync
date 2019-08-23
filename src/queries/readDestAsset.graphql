@@ -1,0 +1,5 @@
+query ReadDestAsset($id: ID) {
+  asset(where: { id: $id }) {
+    id
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "StageSync",
+  "version": "1.0.0",
+  "scripts": {
+    "clean": "rm -rf build && mkdir build",
+    "build-babel": "babel -d ./build ./src -s",
+    "build": "npm run clean && npm run build-babel",
+    "start": "npm run build && node ./build/app.js",
+    "dev": "./node_modules/.bin/nodemon --exec babel-node ./src/app.js"
+  },
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/node": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "nodemon": "^1.19.1"
+  },
+  "dependencies": {
+    "apollo-link": "^1.2.12",
+    "apollo-link-http": "^1.5.15",
+    "axios": "^0.19.0",
+    "babel-plugin-import-graphql": "^2.7.0",
+    "dotenv": "^8.0.0",
+    "graphql": "^14.4.2",
+    "node-fetch": "^2.6.0"
+  }
+}

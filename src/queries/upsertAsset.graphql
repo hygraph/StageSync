@@ -1,0 +1,34 @@
+mutation CreateAsset(
+    $id: ID!
+  	$status: Status
+    $handle: String!
+    $fileName: String!
+    $height: Float
+    $width: Float
+    $size: Float
+    $mimeType: String
+) {
+  upsertAsset(where:{
+    id: $id
+  },
+    create: {
+    status: $status
+    handle: $handle
+    fileName: $fileName
+    height: $height
+    width: $width
+    size: $size
+    mimeType: $mimeType
+  },
+    update: {
+    status: $status
+    handle: $handle
+    fileName: $fileName
+    height: $height
+    width: $width
+    size: $size
+    mimeType: $mimeType
+  }) {
+  	id
+	}
+}

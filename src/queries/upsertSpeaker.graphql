@@ -1,0 +1,31 @@
+mutation UpsertSpeaker(
+    $id: ID!
+    $status: Status
+    $name: String!
+    $position: String
+    $githubLink: String
+    $twitterLink: String
+) {
+    upsertSpeaker(where: {
+        id: $id
+        status: $status
+        name: $name
+        position: $position
+        githubLink: $githubLink
+        twitterLink: $twitterLink
+    }, create: {
+        status: $status
+        name: $name
+        position: $position
+        githubLink: $githubLink
+        twitterLink: $twitterLink
+    }, update: {
+        status: $status
+        name: $name
+        position: $position
+        githubLink: $githubLink
+        twitterLink: $twitterLink
+    }) {
+    id
+  }
+}
