@@ -1,11 +1,18 @@
-import {sourceAxios, destAxios, destAxiosFileStack} from './fetch'
+import {
+    sourceAxios,
+    destAxios,
+    destAxiosFileStack,
+    destAxiosImport} from './fetch'
+
+const pattern = /\.com\/(.+)/
 
 const importNode = payload => ({_typeName: "Asset", ...payload})
 
 const batch = async (args) => {
     const {api, payload, read, create, update} = args
     let errors = []
-    
+    let batchImport = []
+
     for await (let entry of payload) {
         // Set a timeout to help the server
         await new Promise((resolve)=> {setTimeout(resolve, 2000)})
@@ -37,45 +44,34 @@ const batch = async (args) => {
                 }
             })
         } else {
-
+            const bodyFormData = new FormData();
+            bodyFormData.set('url', entry.url);
             
             // Await creating new asset handle
             const fileStackResponse = await destAxiosFileStack({
                 url: "",
-                data: {
-                    url: entry.url
-                }
+                data: bodyFormData
             })
 
-            // TODO: Strip handle out of filestack response url
-            const impportNodeEntry = {
-                ...importNode(entry), ...fileStackResponse.data.url}
+            const newHandle = await fileStackResponse.data.url.match(pattern)[0]
+
+            batchImport.push({
+                ...importNode(entry), handle: newHandle})
             
-            // Construct node for import API
-            // Push consructed node into collection
-            // Use import node
-
-            // Shape of exported asset
-            // {
-            //     "_typeName": "Asset",
-            //     "id": "cjuvcuddwb3cq0c15kmewr906",
-            //     "updatedAt": "2019-04-24T15:12:32.690Z",
-            //     "size": 1080,
-            //     "height": 0,
-            //     "fileName": "cocktail.svg",
-            //     "mimeType": "image/svg+xml",
-            //     "status": "PUBLISHED",
-            //     "createdAt": "2019-04-24T15:10:11.780Z",
-            //     "width": 0,
-            //     "handle": "B1pYOsmdTGukfSSAS8L2"
-            //   },
-
-
-            // Here is where we need to find a way to create the missing assets and upload them with the destination stage API key. But it's not that simple, we also need to find a way to change the relationship for the dependent models with the new ID. The reference should be there but this gets highly nested and specific.
-
-            console.log("Miss", entry)
         }
     }
+
+    if (batchImport.length) {
+        const bodyFormData = new FormData();
+        bodyFormData.set('valueType', "nodes");
+        bodyFormData.set('values', batchImport);
+        
+        const importData = destAxiosImport({
+            url: "",
+            data: bodyFormData
+        })
+    }
+
     return errors;
 
 }

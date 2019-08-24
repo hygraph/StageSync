@@ -24,10 +24,21 @@ const destAxios = axios.create({
 const destAxiosFileStack = axios.create({
     method: "post",
     baseURL: `https://www.filestackapi.com/api/store/S3?key=${process.env.GCMS_FILESTACK_DEST}`,
+    headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+})
+
+const destAxiosImport = axios.create({
+    method: "post",
+    baseURL: DEST_STAGE_API + "/import",
+    headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
 })
 
 
 // Fetch upload url
 
 
-export {sourceAxios, destAxios, destAxiosFileStack}
+export {sourceAxios, destAxios, destAxiosFileStack, destAxiosImport}
