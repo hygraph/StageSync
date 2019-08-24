@@ -1,4 +1,4 @@
-import {sourceAxios, destAxios} from './fetch'
+import {sourceAxios, destAxios, destAxiosFileStack} from './fetch'
 
 const importNode = payload => ({_typeName: "Asset", ...payload})
 
@@ -36,12 +36,21 @@ const batch = async (args) => {
                     variables: entry
                 }
             })
-            console.log(importNode(entry))
         } else {
 
-            console.log(importNode(entry))
-
+            
             // Await creating new asset handle
+            const fileStackResponse = await destAxiosFileStack({
+                url: "",
+                data: {
+                    url: entry.url
+                }
+            })
+
+            // TODO: Strip handle out of filestack response url
+            const impportNodeEntry = {
+                ...importNode(entry), ...fileStackResponse.data.url}
+            
             // Construct node for import API
             // Push consructed node into collection
             // Use import node
