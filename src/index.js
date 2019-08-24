@@ -76,13 +76,13 @@ const run = async () => {
     try {
       
       // Sync Assets
-      await processAssets()  
+      await processAssets()
 
       // Sync Speakers
-      await processSpeakers()
+      // await processSpeakers()
       
       // Sync Events
-      await processEvents()
+      // await processEvents()
 
       
       // console.log(errors)

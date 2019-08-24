@@ -1,12 +1,15 @@
 query ReadAssets($first: Int, $skip: Int) {
   pages: assets(first: $first, skip: $skip) {
     id
-    status
-    handle
+    updatedAt
     fileName
-    height
-    width
     size
+    height
+    fileName
     mimeType
+    status
+    createdAt
+    width
+    handle
   }
 }
