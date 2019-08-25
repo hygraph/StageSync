@@ -47,12 +47,12 @@ const buildBatch = (query) => {
 
 
 // Assets need Unique Handling because we have to check for assets at destination so we can create them with destination filestack API.
-const buildAssetBatch = (readQuery, createQuery, updateQuery) => {
+const buildAssetBatch = (readQuery, updateQuery, createQuery) => {
   return async (payload) => {
     const response = await assetBatch({
       read: pickQuery(readQuery),
-      // create: pickQuery(createQuery),
       // update: pickQuery(updateQuery),
+      // create: pickQuery(createQuery),
       payload: payload
     })
     errors = [...errors, ...response]

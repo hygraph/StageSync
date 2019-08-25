@@ -21,7 +21,9 @@
     "apollo-link-http": "^1.5.15",
     "axios": "^0.19.0",
     "babel-plugin-import-graphql": "^2.7.0",
+    "cli-progress": "^3.0.0",
     "dotenv": "^8.0.0",
+    "form-data": "^2.5.0",
     "graphql": "^14.4.2",
     "node-fetch": "^2.6.0"
   }
