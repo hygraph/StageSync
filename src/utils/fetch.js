@@ -22,8 +22,8 @@ const destAxios = axios.create({
 })
 
 const destAxiosFileStack = axios.create({
-    method: "post",
-    baseURL: `https://www.filestackapi.com/api/store/S3?key=${process.env.GCMS_FILESTACK_DEST}`,
+    method: "POST",
+    baseURL: `https://www.filestackapi.com/api`,
     headers: {
         "Content-Type": "application/x-www-form-urlencoded"
     }

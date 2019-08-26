@@ -17,15 +17,18 @@ const batch = async args => {
 
   console.log(`Beginning batch of ${payload.length}`);
 
-  for await (let entry of payload) {
-    // Set a timeout to help the server
 
+  // Batch process all the assets in the page
+  for await (let entry of payload) {
+    
     console.log(`Processing ${entry.id}`);
+    
+    // Set a timeout to help the server
     await new Promise(resolve => {
       setTimeout(resolve, 2000);
     });
 
-    // Check if Asset exists
+    // Check if Asset exists in Destination
     const readResponse = await destAxios({
       url: "",
       data: {
@@ -34,14 +37,18 @@ const batch = async args => {
       }
     });
 
+    // Log errors
     if (readResponse.data.errors) {
       console.log("Error with ", entry.id);
     }
 
+    // Get the data response
     const response = await readResponse.data.data;
 
+    // If we have an asset response we'll update
     if (response && response.asset) {
       
+        // If there were no updates to the file
         if (response.asset.updatedAt !== entry.updatedAt) {
         // Run Update Query
         console.log(`Updating to ${entry.id}`);
@@ -56,13 +63,15 @@ const batch = async args => {
         console.log(`No updates for ${entry.id}`);
       }
     } else {
-      const bodyFormData = new FormData();
+    // If we don't have an existing asset, we'll construct a node for batch import using the import API.
+      
+    const bodyFormData = new FormData();
       bodyFormData.append("url", entry.url);
 
       // Await creating new asset handle
       console.log(`Updating new asset for ${entry.id}`);
       const fileStackResponse = await destAxiosFileStack({
-        url: "",
+        url: `/store/S3?key=${process.env.GCMS_FILESTACK_DEST}&mimetype=image/jpeg&filename=${entry.fileName}`,
         data: bodyFormData
       });
 

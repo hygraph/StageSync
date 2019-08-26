@@ -6,7 +6,7 @@
     "build-babel": "babel -d ./build ./src -s",
     "build": "npm run clean && npm run build-babel",
     "start": "npm run build && node ./build/app.js",
-    "dev": "./node_modules/.bin/nodemon --exec babel-node ./src/app.js"
+    "dev": "rm -rf ./node_modules/.cache/@babel && ./node_modules/.bin/nodemon --exec babel-node ./src/app.js"
   },
   "main": "index.js",
   "license": "MIT",

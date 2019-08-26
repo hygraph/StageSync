@@ -1,5 +1,5 @@
 query ReadAssets($first: Int, $skip: Int) {
-  pages: assets(first: $first, skip: $skip) {
+  pages: assets(first: $first, skip: $skip, orderBy:createdAt_DESC) {
     id
     updatedAt
     fileName
