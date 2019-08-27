@@ -4,6 +4,7 @@ const paginate = async (args) => {
     const {page, skip, query, collection, callback} = args
 
     const response = await sourceAxios({
+        method: "POST",
         url: "",
         data: {
         query: query,

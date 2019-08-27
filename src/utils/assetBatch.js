@@ -30,6 +30,7 @@ const batch = async args => {
 
     // Check if Asset exists in Destination
     const readResponse = await destAxios({
+    method: "POST",
       url: "",
       data: {
         query: read,
@@ -53,6 +54,7 @@ const batch = async args => {
         // Run Update Query
         console.log(`Updating to ${entry.id}`);
         const updateResponse = await destAxios({
+            method: "POST",
           url: "",
           data: {
             query: update,
@@ -64,17 +66,20 @@ const batch = async args => {
       }
     } else {
     // If we don't have an existing asset, we'll construct a node for batch import using the import API.
-      
-    const bodyFormData = new FormData();
-      bodyFormData.append("url", entry.url);
+  
+    console.log("Uploading ", entry.url)
 
       // Await creating new asset handle
       console.log(`Updating new asset for ${entry.id}`);
       const fileStackResponse = await destAxiosFileStack({
-        url: `/store/S3?key=${process.env.GCMS_FILESTACK_DEST}&mimetype=image/jpeg&filename=${entry.fileName}`,
-        data: bodyFormData
+        method: "POST",
+        url: `/store/S3?key=${process.env.GCMS_FILESTACK_DEST}&filename=${entry.fileName}`,
+        method: 'POST',
+        data: {
+            url: entry.url
+        }
       });
-
+      
       const newHandle = await fileStackResponse.data.url.match(pattern)[0];
 
       console.log(`Queuing import for ${entry.id}`);
@@ -87,13 +92,17 @@ const batch = async args => {
 
   if (batchImport.length) {
     console.log(`Importing batch`);
-    const bodyFormData = new FormData();
-    bodyFormData.append("valueType", "nodes");
-    bodyFormData.append("values", batchImport);
+    // const bodyFormData = new FormData();
+    // bodyFormData.append("valueType", "nodes");
+    // bodyFormData.append("values", batchImport);
 
     const importData = destAxiosImport({
+        method: "POST",
       url: "",
-      data: bodyFormData
+      data: {
+        valueType: "nodes",
+        values: batchImport
+      }
     });
   }
 
