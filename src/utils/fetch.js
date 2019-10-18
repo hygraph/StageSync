@@ -33,6 +33,13 @@ const destAxiosImport = axios.create({
     }
 })
 
+const sourceAxiosExport = axios.create({
+    baseURL: DEST_STAGE_API + "/export",
+    headers: {
+        "Content-Type": "application/json"
+    }
+})
 
 
-export {sourceAxios, destAxios, destAxiosFileStack, destAxiosImport}
+
+export {sourceAxios, destAxios, destAxiosFileStack, destAxiosImport, sourceAxiosExport}

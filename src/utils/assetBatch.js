@@ -66,7 +66,7 @@ const batch = async args => {
       }
     } else {
     // If we don't have an existing asset, we'll construct a node for batch import using the import API.
-  
+    
     console.log("Uploading ", entry.url)
 
       // Await creating new asset handle
@@ -92,9 +92,6 @@ const batch = async args => {
 
   if (batchImport.length) {
     console.log(`Importing batch`);
-    // const bodyFormData = new FormData();
-    // bodyFormData.append("valueType", "nodes");
-    // bodyFormData.append("values", batchImport);
 
     const importData = destAxiosImport({
         method: "POST",
