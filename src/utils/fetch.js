@@ -1,45 +1,65 @@
-require('dotenv').config();
-import axios from 'axios'
-const API = (stage = 'master') =>
-  `https://api-euwest.graphcms.com/v1/cjubekk561n9a01gh4sievp2i/${stage}`
+require("dotenv").config();
+import axios from "axios";
 
-const SOURCE_STAGE_API = API('restructure')
-const DEST_STAGE_API = API('changeDateTime')
+// Be sure to use your own API base here.
+const PROJECT_ID = "ck1rvohw10be401df2et44uhy";
 
-const sourceAxios = axios.create({
-    baseURL: SOURCE_STAGE_API,
-    headers: {
-        'Authorization': `Bearer ${process.env.GCMS_PAT_SOURCE}`,
-      }
-})
-const destAxios = axios.create({
-    baseURL: DEST_STAGE_API,
-    headers: {
-        'Authorization': `Bearer ${process.env.GCMS_PAT_DEST}`,
-      }
-})
+const API = (stage = "master") =>
+  `https://api-euwest.graphcms.com/v1/${PROJECT_ID}/${stage}`;
 
-const destAxiosFileStack = axios.create({
-    baseURL: `https://www.filestackapi.com/api`,
+// Add your own stage names here.
+const SOURCE_STAGE_API = API("delta");
+const DEST_STAGE_API = API("master");
+
+const axiosCreate = (url, key) => 
+  axios.create({
+    baseURL: url,
     headers: {
-        "Content-Type": "application/json"
+      Authorization: `Bearer ${process.env[key]}`,
+      "Content-Type": "application/json"
     }
-})
+  });
 
-const destAxiosImport = axios.create({
-    baseURL: DEST_STAGE_API + "/import",
-    headers: {
-        "Content-Type": "application/json"
-    }
-})
+const sourceAxios = axiosCreate(SOURCE_STAGE_API, "GCMS_PAT_SOURCE");
+const destAxios = axiosCreate(DEST_STAGE_API, "GCMS_PAT_DEST");
 
-const sourceAxiosExport = axios.create({
-    baseURL: DEST_STAGE_API + "/export",
-    headers: {
-        "Content-Type": "application/json"
-    }
-})
+const destAxiosFileStack = axiosCreate(
+  `https://www.filestackapi.com/api`,
+  "GCMS_FILESTACK_DEST"
+);
 
+const sourceAxiosFileStack = axiosCreate(
+  `https://www.filestackapi.com/api`,
+  "GCMS_FILESTACK_SOURCE"
+);
 
+const destAxiosImport = axiosCreate(
+  DEST_STAGE_API + "/import",
+  "GCMS_SYSTEM_DEST_IMPORT"
+);
 
-export {sourceAxios, destAxios, destAxiosFileStack, destAxiosImport, sourceAxiosExport}
+const destAxiosExport = axiosCreate(
+  DEST_STAGE_API + "/export",
+  "GCMS_SYSTEM_DEST_EXPORT"
+);
+
+const sourceAxiosImport = axiosCreate(
+  SOURCE_STAGE_API + "/import",
+  "GCMS_SYSTEM_SOURCE_IMPORT"
+);
+
+const sourceAxiosExport = axiosCreate(
+  SOURCE_STAGE_API + "/export",
+  "GCMS_SYSTEM_SOURCE_EXPORT"
+);
+
+export {
+  sourceAxios,
+  destAxios,
+  destAxiosFileStack,
+  sourceAxiosFileStack,
+  destAxiosImport,
+  destAxiosExport,
+  sourceAxiosImport,
+  sourceAxiosExport
+};

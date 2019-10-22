@@ -1,0 +1,7 @@
+query ReadHotels($first: Int, $skip: Int) {
+  pages: hotels(first: $first, skip: $skip, orderBy:createdAt_DESC) {
+    id
+    updatedAt
+    name
+  }
+}

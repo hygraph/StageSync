@@ -1,6 +1,6 @@
 mutation CreateAsset(
     $id: ID!
-  	$status: Status
+    $status: Status
     $handle: String!
     $fileName: String!
     $height: Float
@@ -29,6 +29,6 @@ mutation CreateAsset(
     size: $size
     mimeType: $mimeType
   }) {
-  	id
+    id
 	}
 }

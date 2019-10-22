@@ -1,4 +1,5 @@
 import {sourceAxios} from './fetch'
+import {reportError} from './errors'
 
 const paginate = async (args) => {
     const {page, skip, query, collection, callback} = args
@@ -15,6 +16,7 @@ const paginate = async (args) => {
     })
     if(response.data.errors) {
         console.log('Error', response.data.errors)
+        reportError(response.data.errors)
     }
 
     if (response.data.data.pages.length === page) {

@@ -1,0 +1,17 @@
+mutation UpsertHotel(
+    $id: ID!
+    $status: Status
+    $name: String!
+) {
+    upsertHotel(where: {
+        id: $id
+    }, create: {
+        status: $status
+        name: $name
+    }, update: {
+        status: $status
+        name: $name
+    }) {
+    id
+  }
+}

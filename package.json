@@ -14,17 +14,12 @@
     "@babel/core": "^7.5.5",
     "@babel/node": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
-    "nodemon": "^1.19.1"
+    "nodemon": "^1.19.4"
   },
   "dependencies": {
-    "apollo-link": "^1.2.12",
-    "apollo-link-http": "^1.5.15",
     "axios": "^0.19.0",
     "babel-plugin-import-graphql": "^2.7.0",
-    "cli-progress": "^3.0.0",
     "dotenv": "^8.0.0",
-    "form-data": "^2.5.0",
-    "graphql": "^14.4.2",
-    "node-fetch": "^2.6.0"
+    "graphql": "^14.4.2"
   }
 }

@@ -1,0 +1,14 @@
+mutation UpsertReview(
+    $id: ID!
+    $status: Status
+) {
+    upsertReview(where: {
+        id: $id
+    }, create: {
+        status: $status
+    }, update: {
+        status: $status
+    }) {
+    id
+  }
+}

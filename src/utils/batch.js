@@ -1,12 +1,15 @@
-import {sourceAxios} from './fetch'
+import {destAxios} from './fetch'
+import {reportError} from './errors'
 const batch = async (args) => {
-    const {payload, query} = args
-    let errors = []
-    
+    let {payload, query, transformation} = args
     for await (let entry of payload) {
         await new Promise((resolve)=> {setTimeout(resolve, 2000)})
+
+        if (transformation) {
+            payload = transformation(payload)
+        }
         
-        const response = await sourceAxios({
+        const response = await destAxios({
             method: "POST",
             url: "",
             data: {
@@ -17,12 +20,11 @@ const batch = async (args) => {
         
         if(response.data.errors) {
             console.log('Error with ', entry.id)
+            reportError(response.data.errors)
         } else {
             console.log("Upserted ", entry.id)
         }
     }
-    return errors;
-
 }
 
 export default  batch

@@ -1,14 +1,20 @@
-import paginate from './utils/paginate'
-import batch from './utils/batch'
-import assetBatch from './utils/assetBatch'
+import {buildPagination} from './utils/buildPagination'
+import {buildAssetBatch} from './utils/buildAssetBatch'
+import {buildBatch} from './utils/buildBatch'
+import {buildIO} from './utils/buildIO'
+import {reportErrors} from './utils/errors'
 
-// Speakers
-import readSpeakerQuery from './queries/readSpeaker.graphql'
-import upsertSpeakerMutation from './queries/upsertSpeaker.graphql'
+// Hotels
+import readHotelsQuery from './queries/readHotelsQuery.graphql'
+import upsertHotelMutation from './queries/upsertHotelMutation.graphql'
 
-// Events
-import readEventQuery from './queries/readEvent.graphql'
-import upsertEventMutation from './queries/upsertEvent.graphql'
+// Destination
+import readDestinationsQuery from './queries/readDestinationsQuery.graphql'
+import upsertDestinationMutation from './queries/upsertDestinationMutation.graphql'
+
+// Destination
+import readReviewsQuery from './queries/readReviewsQuery.graphql'
+import upsertReviewMutation from './queries/upsertReviewMutation.graphql'
 
 // Assets
 import readAssetQuery from './queries/readAsset.graphql'
@@ -16,76 +22,62 @@ import readDestAssetQuery from './queries/readDestAsset.graphql'
 import upsertAssetQuery from './queries/upsertAsset.graphql'
 
 
-let errors = []
+// Relationships
+import {importBatch} from './utils/importBatch'
 
-const defaultArgs = {
-  page: 5,
-  skip: 0,
-  collection: []
-}
+// Destinations
+const writeDestination = buildBatch(upsertDestinationMutation)
+const processDestinations = buildPagination(readDestinationsQuery, writeDestination)
 
+// Hotels
 
-//  Helpers
-const pickQuery = node => node.loc.source.body
-const buildPagination = (query, callback) => {
-  return async () => {
-    await paginate({
-      ...defaultArgs,
-      query: pickQuery(query),
-      callback: callback})
-  }
-}
-const buildBatch = (query) => {
-    return async (payload) => {
-      const response = await batch({
-        query: pickQuery(query),
-        payload: payload
-      })
-      errors = [...errors, ...response]
-  }
-}
+/*
+  Optionally pass a transformation function
+  that accepts the expected payload shape and
+  returns the desired shape.
+*/
+const writeHotel = buildBatch(upsertHotelMutation, /* transform function */)
+const processHotels = buildPagination(readHotelsQuery, writeHotel)
 
-
-// Assets need Unique Handling because we have to check for assets at destination so we can create them with destination filestack API.
-const buildAssetBatch = (readQuery, updateQuery, createQuery) => {
-  return async (payload) => {
-    const response = await assetBatch({
-      read: pickQuery(readQuery),
-      // update: pickQuery(updateQuery),
-      // create: pickQuery(createQuery),
-      payload: payload
-    })
-    errors = [...errors, ...response]
-}
-}
-
-
-// Events
-const writeEvents = buildBatch(upsertEventMutation)
-const processEvents = buildPagination(readEventQuery, writeEvents)
-
-// Speakers
-const writeSpeakers = buildBatch(upsertSpeakerMutation)
-const processSpeakers = buildPagination(readSpeakerQuery, writeSpeakers)
+// Reviews
+const writeReview = buildBatch(upsertReviewMutation)
+const processReviews = buildPagination(readReviewsQuery, writeReview)
 
 // Assets
-const writeAssets = buildAssetBatch(readDestAssetQuery)
+const writeAssets = buildAssetBatch(readDestAssetQuery, upsertAssetQuery)
 const processAssets = buildPagination(readAssetQuery, writeAssets)
+
+// Relations
+const importRelations = importBatch({valueType: 'relations'})
+const processRelations = buildIO('relations', importRelations)
 
 const run = async () => {
     try {
       
       // Sync Assets
-      await processAssets()
+      console.log("Processing Assets...")
+      // await processAssets()
+      reportErrors()
 
-      // Sync Speakers
-      // await processSpeakers()
+      // Sync Hotels
+      console.log("Processing Hotels...")
+      await processHotels()
+      reportErrors()
       
-      // Sync Events
-      // await processEvents()
+      // Sync Destinations
+      console.log("Processing Destinations...")
+      // await processDestinations()
+      reportErrors()
 
-      
-      // console.log(errors)
+      // Sync Reviews
+      console.log("Processing Reviews...")
+      await processReviews()
+      reportErrors()
+
+      // Sync Relations
+      await processRelations()
+      reportErrors()
+
     } catch (error) {
       console.log(error)
     }

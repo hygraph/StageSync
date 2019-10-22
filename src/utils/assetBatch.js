@@ -1,6 +1,4 @@
-const FormData = require("form-data");
 import {
-  sourceAxios,
   destAxios,
   destAxiosFileStack,
   destAxiosImport
@@ -11,7 +9,7 @@ const pattern = /\.com\/(.+)/;
 const importNode = payload => ({ _typeName: "Asset", ...payload });
 
 const batch = async args => {
-  const { api, payload, read, create, update } = args;
+  const {payload, read, update } = args;
   let errors = [];
   let batchImport = [];
 
@@ -65,8 +63,7 @@ const batch = async args => {
         console.log(`No updates for ${entry.id}`);
       }
     } else {
-    // If we don't have an existing asset, we'll construct a node for batch import using the import API.
-    
+    // If we don't have an existing asset, we'll construct a node for batch import using the import    
     console.log("Uploading ", entry.url)
 
       // Await creating new asset handle

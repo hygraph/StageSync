@@ -1,0 +1,6 @@
+query ReadReviews($first: Int, $skip: Int) {
+  pages: reviews(first: $first, skip: $skip, orderBy:createdAt_DESC) {
+    id
+    status
+  }
+}
