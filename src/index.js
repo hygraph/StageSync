@@ -56,7 +56,7 @@ const run = async () => {
       
       // Sync Assets
       console.log("Processing Assets...")
-      // await processAssets()
+      await processAssets()
       reportErrors()
 
       // Sync Hotels
@@ -66,7 +66,7 @@ const run = async () => {
       
       // Sync Destinations
       console.log("Processing Destinations...")
-      // await processDestinations()
+      await processDestinations()
       reportErrors()
 
       // Sync Reviews

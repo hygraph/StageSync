@@ -20,17 +20,23 @@ const axiosCreate = (url, key) =>
     }
   });
 
+  const axiosCreateFileStack = (url) => 
+  axios.create({
+    baseURL: url,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+  });
+
 const sourceAxios = axiosCreate(SOURCE_STAGE_API, "GCMS_PAT_SOURCE");
 const destAxios = axiosCreate(DEST_STAGE_API, "GCMS_PAT_DEST");
 
-const destAxiosFileStack = axiosCreate(
-  `https://www.filestackapi.com/api`,
-  "GCMS_FILESTACK_DEST"
+const destAxiosFileStack = axiosCreateFileStack(
+  `https://www.filestackapi.com/api/store/S3`
 );
 
-const sourceAxiosFileStack = axiosCreate(
-  `https://www.filestackapi.com/api`,
-  "GCMS_FILESTACK_SOURCE"
+const sourceAxiosFileStack = axiosCreateFileStack(
+  `https://www.filestackapi.com/api/store/S3`
 );
 
 const destAxiosImport = axiosCreate(

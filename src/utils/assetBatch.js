@@ -1,8 +1,11 @@
+import qs from 'querystring'
+import axios from 'axios'
+
 import {
   destAxios,
-  destAxiosFileStack,
   destAxiosImport
 } from "./fetch";
+
 
 const pattern = /\.com\/(.+)/;
 
@@ -68,18 +71,21 @@ const batch = async args => {
 
       // Await creating new asset handle
       console.log(`Updating new asset for ${entry.id}`);
-      const fileStackResponse = await destAxiosFileStack({
-        method: "POST",
-        url: `/store/S3?key=${process.env.GCMS_FILESTACK_DEST}&filename=${entry.fileName}`,
-        method: 'POST',
-        data: {
-            url: entry.url
-        }
-      });
       
-      const newHandle = await fileStackResponse.data.url.match(pattern)[0];
+      const queryparams = qs.stringify({
+        key: process.env.GCMS_FILESTACK_DEST,
+        url: entry.url,
+        path: `/${process.env.GCMS_PROJECT_ID}-${process.env.GCMS_DEST_STAGE_NAME}/${entry.fileName}`
+      })
+
+      const fileStackResponse = await axios.post(`https://www.filestackapi.com/api/store/S3?${queryparams}`)
+
+      const newHandle = await fileStackResponse.data.url.match(pattern)[1];
 
       console.log(`Queuing import for ${entry.id}`);
+
+      delete entry.url
+      
       batchImport.push({
         ...importNode(entry),
         handle: newHandle
@@ -90,7 +96,7 @@ const batch = async args => {
   if (batchImport.length) {
     console.log(`Importing batch`);
 
-    const importData = destAxiosImport({
+    const importData = await destAxiosImport({
         method: "POST",
       url: "",
       data: {
@@ -98,7 +104,10 @@ const batch = async args => {
         values: batchImport
       }
     });
+
+    console.log(importData.data)
   }
+  
 
   return errors;
 };
